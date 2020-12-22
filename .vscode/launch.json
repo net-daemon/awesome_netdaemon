@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build database",
-            "program": "${workspaceFolder}/database/mysql_ef/bin/Debug/net5.0/database.dll",
+            "program": "${workspaceFolder}/database/bin/Debug/net5.0/database.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/database/mysql_ef",
+            "cwd": "${workspaceFolder}/database",
             "console": "internalConsole",
             "stopAtEntry": false,
             "logging": {
