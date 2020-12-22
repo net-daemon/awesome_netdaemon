@@ -1,4 +1,4 @@
-﻿# PersistantState showcase
+﻿# PersistentState showcase
 This is a showcase how to include database support in your apps. **If you include external dependecies you will have to use ether the project or publish options to deploy your apps** See [advanced deployment](https://netdaemon.xyz/docs/started/installation) in the docs.
 
 It uses Entity Framework Core to access the MariaDb to stor key/value states.
@@ -49,7 +49,7 @@ CREATE TABLE `States` (
 
 ## 3. Test the counter
 1. Rename `_appsettings.json`->`appsettings.json` and edit `appsettings.json` to connect to your instance of Home Assistant, Host and Token is required
-2. Review `connection_string`setting in PersistantStateApp.yaml, edit as needed
+2. Review `connection_string`setting in PersistentStateApp.yaml, edit as needed
 3. Now debug/run the apps. Each time it should count the number of times it is initialized.
 
 ATTRIBUTION @quettih (Hermes), provided a sample to I could look at

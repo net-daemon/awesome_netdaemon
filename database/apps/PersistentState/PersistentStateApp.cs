@@ -3,13 +3,13 @@ using System.Reactive.Linq;
 
 using NetDaemon.Common.Reactive;
 
-namespace PersistantApp
+namespace PersistentApp
 {
 
     /// <summary>
-    ///      App that tests persistant storage
+    ///      App that tests persistent storage
     /// </summary>
-    public class PersistantApp : PersistantStateAppBase
+    public class PersistentApp : PersistentStateAppBase
     {
         public override void Initialize()
         {

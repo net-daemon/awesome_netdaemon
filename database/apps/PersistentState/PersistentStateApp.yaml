@@ -1,3 +1,3 @@
-persistant_app:
-  class: PersistantApp.PersistantApp
+persistent_app:
+  class: PersistentApp.PersistentApp
   connection_string: "server=192.168.1.7;database=test;user=test;password=test;"

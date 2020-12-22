@@ -5,17 +5,17 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace PersistantApp
+namespace PersistentApp
 {
     /// <summary>
-    ///     Baseclass that has persistant storage capability
+    ///     Baseclass that has persistent storage capability
     /// </summary>
-    public class PersistantStateAppBase : NetDaemonRxApp
+    public class PersistentStateAppBase : NetDaemonRxApp
     {
         public string? ConnectionString { get; set; } = null;
 
         /// <summary>
-        ///     Get persistant state
+        ///     Get persistent state
         /// </summary>
         /// <param name="name">Name of state</param>
         public object? GetPersistentState(string name)
