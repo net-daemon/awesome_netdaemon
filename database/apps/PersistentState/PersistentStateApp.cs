@@ -13,13 +13,17 @@ namespace PersistentApp
     {
         public override void Initialize()
         {
-            int? counter = (int?)GetPersistentState("counter");
-            if (counter is null)
-                SetPersistentState("counter", 1);
-            else
-                SetPersistentState("counter", counter + 1);
+            RunEvery(TimeSpan.FromSeconds(1), () =>
+            {
+                int? counter = (int?)GetPersistentState("counter");
+                if (counter is null)
+                    SetPersistentState("counter", 1);
+                else
+                    SetPersistentState("counter", counter + 1);
 
-            Log("The counter has count {counter}", counter ?? 0);
+                Log("The counter has count {counter}", counter ?? 0);
+            });
+
         }
     }
 }

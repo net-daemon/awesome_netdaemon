@@ -20,8 +20,8 @@
     <Compile Remove="tests\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JoySoftware.NetDaemon.App" Version="20.51.6-beta" />
-    <PackageReference Include="JoySoftware.NetDaemon.DaemonRunner" Version="20.51.6-beta" />
+    <PackageReference Include="JoySoftware.NetDaemon.App" Version="20.52.0-beta" />
+    <PackageReference Include="JoySoftware.NetDaemon.DaemonRunner" Version="20.52.0-beta" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -34,5 +34,12 @@
 
   </ItemGroup>
 
-
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

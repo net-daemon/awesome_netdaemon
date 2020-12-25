@@ -1,6 +1,7 @@
 {
     "Logging": {
-        "MinimumLevel": "Debug"
+        "MinimumLevel": "Debug",
+        "ConsoleThemeType": "Ansi"
     },
     "HomeAssistant": {
         "Host": "localhost",
@@ -9,7 +10,8 @@
         "Token": "enter_token_here"
     },
     "NetDaemon": {
-        "AppSource": "./apps",
-        "GenerateEntities": false
+        "Admin": false,
+        "GenerateEntities": false,
+        "AppSource": "./"
     }
 }

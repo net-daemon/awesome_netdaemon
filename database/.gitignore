@@ -1,4 +1,5 @@
 obj
 bin
-appsettings.json
+appsettings.*json
 .vs
+_EntityExtensions*.*
