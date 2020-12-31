@@ -22,24 +22,10 @@
   <ItemGroup>
     <PackageReference Include="JoySoftware.NetDaemon.App" Version="20.52.6-beta" />
     <PackageReference Include="JoySoftware.NetDaemon.DaemonRunner" Version="20.52.6-beta" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.1" /> -->
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="appsettings.Development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
 </Project>

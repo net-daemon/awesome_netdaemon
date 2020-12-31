@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build database",
-            "program": "${workspaceFolder}/database/bin/Debug/net5.0/database.dll",
+            "program": "${workspaceFolder}/testing/bin/Debug/net5.0/daemonapp.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/database",
+            "cwd": "${workspaceFolder}/testing",
             "console": "internalConsole",
             "stopAtEntry": false,
             "logging": {
