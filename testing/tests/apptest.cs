@@ -1,10 +1,5 @@
-using System;
-using System.Linq;
-using System.Reactive.Linq;
-using Moq;
 using NetDaemon.Daemon.Fakes;
 using Xunit;
-using NetDaemon.Common.Reactive;
 using HelloWorld;
 
 namespace Tests.Test
