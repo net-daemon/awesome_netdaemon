@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="deploy.ps1" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="C:\git\MyNetdaemonSmarthome\deploy.ps1" workingDirectory="C:\git\MyNetdaemonSmarthome" executablePath="$PROJECT_DIR$/../../../Windows/System32/WindowsPowerShell/v1.0/powershell.exe">
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>
