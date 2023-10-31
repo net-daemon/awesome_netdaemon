@@ -15,4 +15,29 @@ public static class Events
                 },
             };
     }
+
+    public static class InputBoolean
+    {
+        public static object TurnOn(InputBooleanEntity entity) =>
+            new
+            {
+                Domain = "input_boolean",
+                Service = "turn_on",
+                Target = new
+                {
+                    EntityIds = new[] { entity.EntityId }
+                },
+            };
+
+        public static object TurnOff(InputBooleanEntity entity) =>
+            new
+            {
+                Domain = "input_boolean",
+                Service = "turn_off",
+                Target = new
+                {
+                    EntityIds = new[] { entity.EntityId }
+                },
+            };
+    }
 }

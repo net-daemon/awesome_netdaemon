@@ -1,6 +1,7 @@
-﻿using MyNetdaemonSmarthome.Services;
+﻿using AwesomeNetdaemon.Services;
+using AwesomeNetdaemon.Test.TestUtils;
 
-namespace MyNetdaemonSmarthome.Test;
+namespace AwesomeNetdaemon.Test;
 
 public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageService sut, StateChangeManager state, TestEntityBuilder entityBuilder)
 {

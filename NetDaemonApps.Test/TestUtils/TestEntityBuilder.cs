@@ -1,6 +1,6 @@
 using NetDaemon.HassModel;
 
-namespace MyNetdaemonSmarthome.Test.TestUtils;
+namespace AwesomeNetdaemon.Test.TestUtils;
 
 public class TestEntityBuilder(IHaContext haContext)
 {

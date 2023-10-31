@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <Deterministic>true</Deterministic>
-    <RootNamespace>MyNetdaemonSmarthome</RootNamespace>
+    <RootNamespace>AwesomeNetdaemon</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

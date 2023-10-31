@@ -3,7 +3,7 @@ using System.Globalization;
 using NetDaemon.HassModel;
 using NetDaemon.HassModel.Entities;
 
-namespace MyNetdaemonSmarthome.Test.TestUtils;
+namespace AwesomeNetdaemon.Test.TestUtils;
 
 public class StateChangeManager(IHaContext haContextMock, TestScheduler testScheduler)
 {

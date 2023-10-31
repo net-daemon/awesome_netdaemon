@@ -1,7 +1,7 @@
 using System.Reflection;
+using AwesomeNetdaemon.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using MyNetdaemonSmarthome.Services;
 using NetDaemon.Extensions.Logging;
 using NetDaemon.Extensions.Scheduler;
 using NetDaemon.Runtime;

@@ -2,7 +2,7 @@
 using MathNet.Numerics.Statistics;
 using NetDaemon.HassModel.Entities;
 
-namespace MyNetdaemonSmarthome;
+namespace AwesomeNetdaemon;
 
 public static class ObservableExtensions
 {

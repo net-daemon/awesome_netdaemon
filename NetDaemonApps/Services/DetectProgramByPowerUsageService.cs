@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Concurrency;
 
-namespace MyNetdaemonSmarthome.Services;
+namespace AwesomeNetdaemon.Services;
 
 public class DetectProgramByPowerUsageService(IScheduler scheduler, ILogger<DetectProgramByPowerUsageService> logger)
 {

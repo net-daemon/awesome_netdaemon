@@ -4,7 +4,7 @@ using System.Text.Json;
 using NetDaemon.HassModel;
 using NetDaemon.HassModel.Entities;
 
-namespace MyNetdaemonSmarthome.Test.TestUtils;
+namespace AwesomeNetdaemon.Test.TestUtils;
 
 public record TestServiceCall(string Domain, string Service, ServiceTarget? Target = null, object? Data = null);
 

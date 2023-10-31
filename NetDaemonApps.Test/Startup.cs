@@ -1,11 +1,12 @@
 using System.Reactive.Concurrency;
+using AwesomeNetdaemon.Services;
+using AwesomeNetdaemon.Test.TestUtils;
 using Microsoft.Extensions.DependencyInjection;
-using MyNetdaemonSmarthome.Services;
 using NetDaemon.Extensions.Scheduler;
 using NetDaemon.HassModel;
 using Xunit.DependencyInjection.Logging;
 
-namespace MyNetdaemonSmarthome.Test;
+namespace AwesomeNetdaemon.Test;
 
 public static class Startup
 {
