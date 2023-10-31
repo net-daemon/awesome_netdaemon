@@ -1,6 +1,5 @@
 ﻿using AwesomeNetdaemon.Apps;
 using AwesomeNetdaemon.Test.TestUtils;
-using MyNetdaemonSmarthome.Test.TestUtils;
 
 namespace AwesomeNetdaemon.Test;
 

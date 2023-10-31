@@ -1,4 +1,4 @@
-namespace MyNetdaemonSmarthome.Test.TestUtils;
+namespace AwesomeNetdaemon.Test.TestUtils;
 
 public static class Events
 {
