@@ -46,6 +46,14 @@ public static class ObservableExtensions
         return source.Where(x => x.New?.State != null).MovingAverage(x => x.New!.State.GetValueOrDefault(), windowSize);
     }
 
+    /// <summary>
+    /// Calculates a running moving average of a sequence of values.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="selector"></param>
+    /// <param name="windowSize"></param>
+    /// <typeparam name="TSource"></typeparam>
+    /// <returns></returns>
     public static IObservable<double> MovingAverage<TSource>(this IObservable<TSource> source, Func<TSource, double> selector, int windowSize)
     {
         var statistics = new MovingStatistics(windowSize);
@@ -57,6 +65,14 @@ public static class ObservableExtensions
         });
     }
 
+    /// <summary>
+    /// Will let a value through if <paramref name="trigger"/> returns true and will then block values until <paramref name="reset"/> returns true.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="trigger"></param>
+    /// <param name="reset"></param>
+    /// <typeparam name="TSource"></typeparam>
+    /// <returns></returns>
     public static IObservable<TSource> TriggerAndWait<TSource>(this IObservable<TSource> source, Func<TSource, bool> trigger, Func<TSource, bool> reset)
     {
         ArgumentNullException.ThrowIfNull(source);
