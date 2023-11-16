@@ -21,7 +21,7 @@ public static class Startup
         services.AddTransient<IScheduler>(s => s.GetRequiredService<TestScheduler>());
         services.AddTransient<StateChangeManager>();
         services.AddTransient<TestEntityBuilder>();
-
-        services.AddTransient<DetectProgramByPowerUsageService>();
+        services.AddTransient<DetectProgramByPowerUsageBuilder>();
+        services.AddTransient<DetectProgramByPowerUsageBuilderFactory>();
     }
 }

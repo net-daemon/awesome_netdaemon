@@ -25,7 +25,8 @@ try
         .AddHomeAssistantGenerated()
         .AddTransient<IEntities, Entities>()
         .AddTransient<IServices, Services>()
-        .AddTransient<DetectProgramByPowerUsageService>();
+        .AddTransient<DetectProgramByPowerUsageBuilder>()
+        .AddTransient<DetectProgramByPowerUsageBuilderFactory>();
 
     var app = builder.Build();
 

@@ -3,7 +3,7 @@ using AwesomeNetdaemon.Test.TestUtils;
 
 namespace AwesomeNetdaemon.Test;
 
-public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageService sut, StateChangeManager state, TestEntityBuilder entityBuilder)
+public class DetectProgramByPowerUsageBuilderTests(DetectProgramByPowerUsageBuilder sut, StateChangeManager state, TestEntityBuilder entityBuilder)
 {
     [Fact]
     public void ProgramStart_ProgramEnd_TimeAndConsumedPowerAreCorrect()
@@ -12,7 +12,11 @@ public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageServ
         var (currentPowerSensor, totalPowerSensor) = CreateEntities();
 
         //ACT
-        sut.GenerateObservable(currentPowerSensor, totalPowerSensor, x => x > 3)
+        sut
+            .WithPowerSensor(currentPowerSensor)
+            .WithTotalPowerSensor(totalPowerSensor)
+            .WithStartFilter(x => x > 3)
+            .Build()
             .SubscribeAndCapture(out var detectedPrograms);
 
         state
@@ -31,6 +35,31 @@ public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageServ
     }
 
     [Fact]
+    public void ProgramStart_ProgramEnd_NotEnoughConsumedPower_IgnoresProgram()
+    {
+        //ARRANGE
+        var (currentPowerSensor, totalPowerSensor) = CreateEntities();
+
+        //ACT
+        sut
+            .WithPowerSensor(currentPowerSensor)
+            .WithTotalPowerSensor(totalPowerSensor)
+            .WithStartFilter(x => x > 3)
+            .WithEndFilter(x => x.ConsumedPower > 0.1)
+            .Build()
+            .SubscribeAndCapture(out var detectedPrograms);
+
+        state
+            .Change(currentPowerSensor, 5)
+            .Change(totalPowerSensor, 0.09)
+            .Change(currentPowerSensor, 1);
+
+
+        //ASSERT
+        detectedPrograms.Should().BeEmpty();
+    }
+
+    [Fact]
     public void NetDaemonStartsAfterProgramStart_IgnoresProgram()
     {
         //ARRANGE
@@ -40,7 +69,11 @@ public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageServ
             .Change(currentPowerSensor, 5);
 
         //ACT
-        sut.GenerateObservable(currentPowerSensor, totalPowerSensor, x => x > 3)
+        sut
+            .WithPowerSensor(currentPowerSensor)
+            .WithTotalPowerSensor(totalPowerSensor)
+            .WithStartFilter(x => x > 3)
+            .Build()
             .SubscribeAndCapture(out var detectedPrograms);
 
         state
@@ -58,7 +91,11 @@ public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageServ
         var (currentPowerSensor, totalPowerSensor) = CreateEntities();
 
         //ACT
-        sut.GenerateObservable(currentPowerSensor, totalPowerSensor, x => x > 3)
+        sut
+            .WithPowerSensor(currentPowerSensor)
+            .WithTotalPowerSensor(totalPowerSensor)
+            .WithStartFilter(x => x > 3)
+            .Build()
             .SubscribeAndCapture(out var detectedPrograms);
 
         state
@@ -79,7 +116,11 @@ public class DetectProgramByPowerUsageServiceTests(DetectProgramByPowerUsageServ
         var (currentPowerSensor, totalPowerSensor) = CreateEntities();
 
         //ACT
-        sut.GenerateObservable(currentPowerSensor, totalPowerSensor, x => x > 3)
+        sut
+            .WithPowerSensor(currentPowerSensor)
+            .WithTotalPowerSensor(totalPowerSensor)
+            .WithStartFilter(x => x > 3)
+            .Build()
             .SubscribeAndCapture(out var detectedPrograms);
 
         state
