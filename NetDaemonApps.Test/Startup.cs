@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
 using AwesomeNetdaemon.Services;
 using AwesomeNetdaemon.Test.TestUtils;
@@ -5,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NetDaemon.Extensions.Scheduler;
 using NetDaemon.HassModel;
 using Xunit.DependencyInjection.Logging;
+
+[assembly: ExcludeFromCodeCoverage]
 
 namespace AwesomeNetdaemon.Test;
 
