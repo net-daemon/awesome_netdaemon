@@ -58,4 +58,10 @@ public class HaContextMockImpl : IHaContext
         EntityStates[entityId] = newState;
         StateAllChangeSubject.OnNext(new StateChange(new Entity(this, entityId), oldState, newState));
     }
+
+    public EntityRegistration? GetEntityRegistration(string entityId)
+    {
+        throw new NotImplementedException();
+    }
+
 }
