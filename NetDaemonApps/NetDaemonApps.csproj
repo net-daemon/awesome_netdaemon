@@ -21,15 +21,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <Content Remove="NetDaemonCodegen\*.json"/>
+    <Content Remove="NetDaemonCodegen\*.json" />
     <None Include="NetDaemonCodegen\*.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NetDaemon.Runtime" Version="23.43.0-alpha"/>
-    <PackageReference Include="NetDaemon.Extensions.Scheduling" Version="23.43.0-alpha"/>
-    <PackageReference Include="NetDaemon.Extensions.Logging" Version="23.43.0-alpha"/>
-    <PackageReference Include="MathNet.Numerics" Version="5.0.0"/>
+    <PackageReference Include="NetDaemon.Runtime" Version="24.28.1" />
+    <PackageReference Include="NetDaemon.Extensions.Scheduling" Version="24.28.1" />
+    <PackageReference Include="NetDaemon.Extensions.Logging" Version="24.28.1" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
 </Project>
