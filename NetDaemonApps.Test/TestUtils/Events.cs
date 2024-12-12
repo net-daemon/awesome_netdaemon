@@ -1,6 +1,6 @@
 namespace AwesomeNetdaemon.Test.TestUtils;
 
-public static class Events
+public static class HaEvents
 {
     public static class Light
     {

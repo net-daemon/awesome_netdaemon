@@ -15,7 +15,7 @@ public class PresenceAppTests(Entities entities, StateChangeManager state)
 
         state.ServiceCalls.Should().BeEquivalentTo(new[]
         {
-            Events.InputBoolean.TurnOn(entities.InputBoolean.Toggle)
+            HaEvents.InputBoolean.TurnOn(entities.InputBoolean.Toggle)
         });
     }
 
@@ -29,7 +29,7 @@ public class PresenceAppTests(Entities entities, StateChangeManager state)
 
         state.ServiceCalls.Should().BeEquivalentTo(new[]
         {
-            Events.InputBoolean.TurnOff(entities.InputBoolean.Toggle)
+            HaEvents.InputBoolean.TurnOff(entities.InputBoolean.Toggle)
         });
     }
 }

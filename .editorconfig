@@ -54,3 +54,4 @@ dotnet_diagnostic.CA1052.severity = none
 dotnet_diagnostic.CA2201.severity = none
 #Normalize strings to uppercase
 dotnet_diagnostic.CA1308.severity = none
+dotnet_diagnostic.CA1515.severity = none
