@@ -15,15 +15,14 @@ public class ObservableExtensionsTest
         _ = observable.MovingAverage(3).SubscribeAndCapture(out var results);
 
         //Assert
-        results.Should().BeEquivalentTo(new[]
-        {
+        results.Should().BeEquivalentTo([
             1,
             (1 + 2) / 2d,
             (1 + 2 + 3) / 3d,
             (2 + 3 + 4) / 3d,
             (3 + 4 + 7) / 3d,
             (4 + 7 + 6) / 3d
-        });
+        ]);
     }
 
     [Fact]
@@ -39,6 +38,6 @@ public class ObservableExtensionsTest
             .SubscribeAndCapture(out var results);
 
         //Assert
-        results.Should().BeEquivalentTo(new[] { 1.02, 1.54 });
+        results.Should().BeEquivalentTo([1.02, 1.54]);
     }
 }

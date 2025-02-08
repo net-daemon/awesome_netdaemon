@@ -13,10 +13,9 @@ public class PresenceAppTests(Entities entities, StateChangeManager state)
         state
             .Change(entities.Person.Test, "home");
 
-        state.ServiceCalls.Should().BeEquivalentTo(new[]
-        {
-            HaEvents.InputBoolean.TurnOn(entities.InputBoolean.Toggle)
-        });
+        state.ServiceCalls.Should().BeEquivalentTo([
+            entities.InputBoolean.Toggle.ExpectTurnOnEvent()
+        ]);
     }
 
     [Fact]
@@ -27,9 +26,8 @@ public class PresenceAppTests(Entities entities, StateChangeManager state)
         state
             .Change(entities.Person.Test, "not_home");
 
-        state.ServiceCalls.Should().BeEquivalentTo(new[]
-        {
-            HaEvents.InputBoolean.TurnOff(entities.InputBoolean.Toggle)
-        });
+        state.ServiceCalls.Should().BeEquivalentTo([
+            entities.InputBoolean.Toggle.ExpectTurnOffEvent()
+        ]);
     }
 }

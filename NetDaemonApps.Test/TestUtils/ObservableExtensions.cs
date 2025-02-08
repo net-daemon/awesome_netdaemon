@@ -6,7 +6,7 @@ public static class ObservableExtensions
 
     private static Action<T> Capture<T>(out List<T> detectedPrograms)
     {
-        detectedPrograms = new List<T>();
+        detectedPrograms = [];
         var list = detectedPrograms;
         return x => list.Add(x);
     }

@@ -37,6 +37,28 @@ public static class HomeAssistantEvents
             }
         };
 
+    public static object ExpectTurnOnEvent(this InputBooleanEntity entity) =>
+        new
+        {
+            Domain = "input_boolean",
+            Service = "turn_on",
+            Target = new
+            {
+                EntityIds = new[] { entity.EntityId }
+            }
+        };
+
+    public static object ExpectTurnOffEvent(this InputBooleanEntity entity) =>
+        new
+        {
+            Domain = "input_boolean",
+            Service = "turn_off",
+            Target = new
+            {
+                EntityIds = new[] { entity.EntityId }
+            }
+        };
+
     public static object ExpectHvacModeAutoEvent(this IClimateEntityCore entity) =>
         new
         {
