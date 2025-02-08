@@ -27,9 +27,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NetDaemon.Runtime" Version="24.50.0" />
-    <PackageReference Include="NetDaemon.Extensions.Scheduling" Version="24.50.0" />
-    <PackageReference Include="NetDaemon.Extensions.Logging" Version="24.50.0" />
+    <PackageReference Include="NetDaemon.Runtime" Version="24.52.0" />
+    <PackageReference Include="NetDaemon.Extensions.Scheduling" Version="24.52.0" />
+    <PackageReference Include="NetDaemon.Extensions.Logging" Version="24.52.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
 </Project>
