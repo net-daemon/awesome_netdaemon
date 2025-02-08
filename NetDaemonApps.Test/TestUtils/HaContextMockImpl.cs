@@ -8,15 +8,13 @@ namespace AwesomeNetdaemon.Test.TestUtils;
 
 public record TestServiceCall(string Domain, string Service, ServiceTarget? Target = null, object? Data = null);
 
-public class HaContextMockImpl : IHaContext
+public sealed class HaContextMockImpl(IHaRegistry haRegistry) : IHaContext
 {
-
     public Dictionary<string, EntityState> EntityStates { get; } = new();
     public Subject<StateChange> StateAllChangeSubject { get; } = new();
     public Subject<Event> EventsSubject { get; } = new();
 
-    private readonly List<TestServiceCall> _serviceCalls = new();
-    public ReadOnlyCollection<TestServiceCall> ServiceCalls => new(_serviceCalls);
+    public List<TestServiceCall> ServiceCalls { get; } = [];
 
     public IObservable<StateChange> StateAllChanges() => StateAllChangeSubject;
 
@@ -24,30 +22,24 @@ public class HaContextMockImpl : IHaContext
 
     public IReadOnlyList<Entity> GetAllEntities() => EntityStates.Keys.Select(s => new Entity(this, s)).ToList();
 
-    public void CallService(string domain, string service, ServiceTarget? target = null, object? data = null)
-    {
-        _serviceCalls.Add(new TestServiceCall(domain, service, target, data));
-    }
+    public void CallService(string domain, string service, ServiceTarget? target = null, object? data = null) => ServiceCalls.Add(new TestServiceCall(domain, service, target, data));
 
-    public Task<JsonElement?> CallServiceWithResponseAsync(string domain, string service, ServiceTarget? target = null, object? data = null)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<JsonElement?> CallServiceWithResponseAsync(string domain, string service, ServiceTarget? target = null, object? data = null) => throw new NotImplementedException();
 
     public Area? GetAreaFromEntityId(string entityId) => null;
+    public EntityRegistration? GetEntityRegistration(string entityId) => haRegistry.GetEntityRegistration(entityId);
 
-    public virtual void SendEvent(string eventType, object? data = null)
-    { }
+    public void SendEvent(string eventType, object? data = null)
+    {
+    }
 
     public IObservable<Event> Events => EventsSubject;
 
-    public void TriggerStateChange(Entity entity, string newStatevalue, object? attributes = null)
+
+    public void TriggerStateChange(IEntityCore entity, string newStatevalue, object? attributes = null)
     {
         var newState = new EntityState { State = newStatevalue };
-        if (attributes != null)
-        {
-            newState = newState.WithAttributes(attributes);
-        }
+        if (attributes != null) newState = newState.WithAttributes(attributes);
 
         TriggerStateChange(entity.EntityId, newState);
     }
@@ -58,10 +50,4 @@ public class HaContextMockImpl : IHaContext
         EntityStates[entityId] = newState;
         StateAllChangeSubject.OnNext(new StateChange(new Entity(this, entityId), oldState, newState));
     }
-
-    public EntityRegistration? GetEntityRegistration(string entityId)
-    {
-        throw new NotImplementedException();
-    }
-
 }

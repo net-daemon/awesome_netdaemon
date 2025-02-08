@@ -20,6 +20,7 @@ public static class Startup
         services.AddTransient<IServices, HomeAssistantGenerated.Services>();
         services.AddNetDaemonScheduler();
         services.AddScoped<IHaContext, HaContextMockImpl>();
+        services.AddScoped<IHaRegistry, HaRegistryMockImpl>();
         services.AddScoped<TestScheduler>();
         services.AddTransient<IScheduler>(s => s.GetRequiredService<TestScheduler>());
         services.AddTransient<StateChangeManager>();

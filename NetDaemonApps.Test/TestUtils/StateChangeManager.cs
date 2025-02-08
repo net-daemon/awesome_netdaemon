@@ -7,16 +7,25 @@ namespace AwesomeNetdaemon.Test.TestUtils;
 
 public class StateChangeManager(IHaContext haContextMock, TestScheduler testScheduler)
 {
-    public ReadOnlyCollection<TestServiceCall> ServiceCalls => ((HaContextMockImpl)haContextMock).ServiceCalls;
+    public ReadOnlyCollection<TestServiceCall> ServiceCalls => new(((HaContextMockImpl)haContextMock).ServiceCalls);
 
-    public StateChangeManager Change(Entity entity, string newStatevalue, object? attributes = null)
+    /// <summary>
+    ///     Clears the tracked list of service calls. Handy if you only want to assert on a subset of the calls.
+    /// </summary>
+    /// <returns></returns>
+    public StateChangeManager ClearTrackedServiceCalls()
+    {
+        ((HaContextMockImpl)haContextMock).ServiceCalls.Clear();
+        return this;
+    }
+
+    public StateChangeManager Change(IEntityCore entity, string newStatevalue, object? attributes = null)
     {
         ((HaContextMockImpl)haContextMock).TriggerStateChange(entity, newStatevalue, attributes);
         return this;
     }
 
-    public StateChangeManager Change(NumericSensorEntity entity, double newStatevalue, object? attributes = null) =>
-        Change(entity, newStatevalue.ToString(CultureInfo.InvariantCulture), attributes);
+    public StateChangeManager Change(ISensorEntityCore entity, double newStatevalue, object? attributes = null) => Change(entity, newStatevalue.ToString(CultureInfo.InvariantCulture), attributes);
 
     public StateChangeManager AdvanceTo(DateTime dateTime)
     {

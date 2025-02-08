@@ -30,4 +30,8 @@
     <ProjectReference Include="..\NetDaemonApps\NetDaemonApps.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove=".editorconfig" />
+  </ItemGroup>
+
 </Project>
