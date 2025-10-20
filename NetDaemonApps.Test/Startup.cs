@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
-using AwesomeNetdaemon.Services;
+using AwesomeNetdaemon.Features.Builders;
 using AwesomeNetdaemon.Test.TestUtils;
 using Microsoft.Extensions.DependencyInjection;
 using NetDaemon.Extensions.Scheduler;

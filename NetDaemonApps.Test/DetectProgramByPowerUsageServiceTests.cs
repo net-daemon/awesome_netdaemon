@@ -1,4 +1,4 @@
-﻿using AwesomeNetdaemon.Services;
+﻿using AwesomeNetdaemon.Features.Builders;
 using AwesomeNetdaemon.Test.TestUtils;
 
 namespace AwesomeNetdaemon.Test;
