@@ -9,11 +9,11 @@ public class LightsAutomationApp
 {
     public LightsAutomationApp(IEntities entities, IScheduler scheduler, ILogger<LightsAutomationApp> logger)
     {
-        // This is an example of how to set up motion sensor based lighting automation using Netdaemon features.
+        // This is an example of how to set up an advanced motion sensor based lighting automation using Netdaemon features. This particular example uses extra abstractions to keep the automation code concise.
         SensorObservableBuilder()
             // We want our motion sensor to turn on the light.
             .WithSensor(entities.BinarySensor._1eHalMotionSensorOccupancy)
-            // If its too bright then we want to keep the light off even if motion is detected by giving it a higher off priority. We use hysteresis to avoid flickering.
+            // If its too bright (> 110) then we want to keep the light off even if motion is detected by giving it a higher off priority. We use hysteresis to avoid flickering.
             .WithSensor(entities.Sensor._1eHalMotionSensorIlluminance, c => c.WithHysteresis(80, 110).WithOffPriority(1))
             .ToObservable()
             // We want the color temperature to follow a circadian rhythm based on the sun position.
