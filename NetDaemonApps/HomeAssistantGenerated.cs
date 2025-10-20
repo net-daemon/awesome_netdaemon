@@ -78,6 +78,7 @@ public static class GeneratedExtensions
 public interface IEntities
 {
     LightEntities Light { get; }
+    BinarySensorEntities BinarySensor { get; }
 
     MediaPlayerEntities MediaPlayer { get; }
 
@@ -109,6 +110,7 @@ public partial class Entities : IEntities
     }
 
     public LightEntities Light => new(_haContext);
+    public BinarySensorEntities BinarySensor => new(_haContext);
     public MediaPlayerEntities MediaPlayer => new(_haContext);
     public PersonEntities Person => new(_haContext);
     public SensorEntities Sensor => new(_haContext);
@@ -128,6 +130,427 @@ public partial class LightEntities
     {
         _haContext = haContext;
     }
+
+    public LightEntity _1eHalLampen => new(_haContext, "light.1e_hal_lampen");
+}
+
+public partial record LightTurnOnParameters
+{
+    ///<summary>Duration it takes to get to next state.</summary>
+    [JsonPropertyName("transition")]
+    public long? Transition { get; init; }
+
+    ///<summary>The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</summary>
+    [JsonPropertyName("rgb_color")]
+    public IReadOnlyCollection<int>? RgbColor { get; init; }
+
+    ///<summary>Color temperature in Kelvin.</summary>
+    [JsonPropertyName("color_temp_kelvin")]
+    public object? ColorTempKelvin { get; init; }
+
+    ///<summary>Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</summary>
+    [JsonPropertyName("brightness_pct")]
+    public long? BrightnessPct { get; init; }
+
+    ///<summary>Change brightness by a percentage.</summary>
+    [JsonPropertyName("brightness_step_pct")]
+    public long? BrightnessStepPct { get; init; }
+
+    ///<summary>Light effect.</summary>
+    [JsonPropertyName("effect")]
+    public string? Effect { get; init; }
+
+    ///<summary> eg: [255, 100, 100, 50]</summary>
+    [JsonPropertyName("rgbw_color")]
+    public object? RgbwColor { get; init; }
+
+    ///<summary> eg: [255, 100, 100, 50, 70]</summary>
+    [JsonPropertyName("rgbww_color")]
+    public object? RgbwwColor { get; init; }
+
+    [JsonPropertyName("color_name")]
+    public object? ColorName { get; init; }
+
+    ///<summary> eg: [300, 70]</summary>
+    [JsonPropertyName("hs_color")]
+    public object? HsColor { get; init; }
+
+    ///<summary> eg: [0.52, 0.43]</summary>
+    [JsonPropertyName("xy_color")]
+    public object? XyColor { get; init; }
+
+    [JsonPropertyName("color_temp")]
+    public object? ColorTemp { get; init; }
+
+    [JsonPropertyName("brightness")]
+    public long? Brightness { get; init; }
+
+    [JsonPropertyName("brightness_step")]
+    public long? BrightnessStep { get; init; }
+
+    [JsonPropertyName("white")]
+    public object? White { get; init; }
+
+    ///<summary> eg: relax</summary>
+    [JsonPropertyName("profile")]
+    public string? Profile { get; init; }
+
+    [JsonPropertyName("flash")]
+    public object? Flash { get; init; }
+}
+
+public partial record LightToggleParameters
+{
+    ///<summary>Duration it takes to get to next state.</summary>
+    [JsonPropertyName("transition")]
+    public long? Transition { get; init; }
+
+    ///<summary>The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</summary>
+    [JsonPropertyName("rgb_color")]
+    public IReadOnlyCollection<int>? RgbColor { get; init; }
+
+    ///<summary>Color temperature in Kelvin.</summary>
+    [JsonPropertyName("color_temp_kelvin")]
+    public object? ColorTempKelvin { get; init; }
+
+    ///<summary>Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</summary>
+    [JsonPropertyName("brightness_pct")]
+    public long? BrightnessPct { get; init; }
+
+    ///<summary>Light effect.</summary>
+    [JsonPropertyName("effect")]
+    public string? Effect { get; init; }
+
+    ///<summary> eg: [255, 100, 100, 50]</summary>
+    [JsonPropertyName("rgbw_color")]
+    public object? RgbwColor { get; init; }
+
+    ///<summary> eg: [255, 100, 100, 50, 70]</summary>
+    [JsonPropertyName("rgbww_color")]
+    public object? RgbwwColor { get; init; }
+
+    [JsonPropertyName("color_name")]
+    public object? ColorName { get; init; }
+
+    ///<summary> eg: [300, 70]</summary>
+    [JsonPropertyName("hs_color")]
+    public object? HsColor { get; init; }
+
+    ///<summary> eg: [0.52, 0.43]</summary>
+    [JsonPropertyName("xy_color")]
+    public object? XyColor { get; init; }
+
+    [JsonPropertyName("color_temp")]
+    public object? ColorTemp { get; init; }
+
+    [JsonPropertyName("brightness")]
+    public long? Brightness { get; init; }
+
+    [JsonPropertyName("white")]
+    public object? White { get; init; }
+
+    ///<summary> eg: relax</summary>
+    [JsonPropertyName("profile")]
+    public string? Profile { get; init; }
+
+    [JsonPropertyName("flash")]
+    public object? Flash { get; init; }
+}
+
+public partial record LightTurnOffParameters
+{
+    ///<summary>Duration it takes to get to next state.</summary>
+    [JsonPropertyName("transition")]
+    public long? Transition { get; init; }
+
+    [JsonPropertyName("flash")]
+    public object? Flash { get; init; }
+}
+
+public partial class BinarySensorEntities
+{
+    private readonly IHaContext _haContext;
+    public BinarySensorEntities(IHaContext haContext)
+    {
+        _haContext = haContext;
+    }
+
+    public BinarySensorEntity _1eHalMotionSensorOccupancy => new(_haContext, "binary_sensor.1e_hal_motion_sensor_occupancy");
+    ///<summary>2e/hal/motion sensor Occupancy</summary>
+}
+
+public static class LightEntityExtensionMethods
+{
+    ///<summary>Toggles one or more lights, from on to off, or off to on, based on their current state.</summary>
+    public static void Toggle(this ILightEntityCore target, LightToggleParameters data)
+    {
+        target.CallService("toggle", data);
+    }
+
+    ///<summary>Toggles one or more lights, from on to off, or off to on, based on their current state.</summary>
+    public static void Toggle(this IEnumerable<ILightEntityCore> target, LightToggleParameters data)
+    {
+        target.CallService("toggle", data);
+    }
+
+    ///<summary>Toggles one or more lights, from on to off, or off to on, based on their current state.</summary>
+    ///<param name="target">The ILightEntityCore to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="rgbColor">The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</param>
+    ///<param name="colorTempKelvin">Color temperature in Kelvin.</param>
+    ///<param name="brightnessPct">Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</param>
+    ///<param name="effect">Light effect.</param>
+    ///<param name="rgbwColor"> eg: [255, 100, 100, 50]</param>
+    ///<param name="rgbwwColor"> eg: [255, 100, 100, 50, 70]</param>
+    ///<param name="colorName"></param>
+    ///<param name="hsColor"> eg: [300, 70]</param>
+    ///<param name="xyColor"> eg: [0.52, 0.43]</param>
+    ///<param name="colorTemp"></param>
+    ///<param name="brightness"></param>
+    ///<param name="white"></param>
+    ///<param name="profile"> eg: relax</param>
+    ///<param name="flash"></param>
+    public static void Toggle(this ILightEntityCore target, long? transition = null, IReadOnlyCollection<int>? rgbColor = null, object? colorTempKelvin = null, long? brightnessPct = null, string? effect = null, object? rgbwColor = null, object? rgbwwColor = null, object? colorName = null, object? hsColor = null, object? xyColor = null, object? colorTemp = null, long? brightness = null, object? white = null, string? profile = null, object? flash = null)
+    {
+        target.CallService("toggle", new LightToggleParameters { Transition = transition, RgbColor = rgbColor, ColorTempKelvin = colorTempKelvin, BrightnessPct = brightnessPct, Effect = effect, RgbwColor = rgbwColor, RgbwwColor = rgbwwColor, ColorName = colorName, HsColor = hsColor, XyColor = xyColor, ColorTemp = colorTemp, Brightness = brightness, White = white, Profile = profile, Flash = flash });
+    }
+
+    ///<summary>Toggles one or more lights, from on to off, or off to on, based on their current state.</summary>
+    ///<param name="target">The IEnumerable&lt;ILightEntityCore&gt; to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="rgbColor">The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</param>
+    ///<param name="colorTempKelvin">Color temperature in Kelvin.</param>
+    ///<param name="brightnessPct">Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</param>
+    ///<param name="effect">Light effect.</param>
+    ///<param name="rgbwColor"> eg: [255, 100, 100, 50]</param>
+    ///<param name="rgbwwColor"> eg: [255, 100, 100, 50, 70]</param>
+    ///<param name="colorName"></param>
+    ///<param name="hsColor"> eg: [300, 70]</param>
+    ///<param name="xyColor"> eg: [0.52, 0.43]</param>
+    ///<param name="colorTemp"></param>
+    ///<param name="brightness"></param>
+    ///<param name="white"></param>
+    ///<param name="profile"> eg: relax</param>
+    ///<param name="flash"></param>
+    public static void Toggle(this IEnumerable<ILightEntityCore> target, long? transition = null, IReadOnlyCollection<int>? rgbColor = null, object? colorTempKelvin = null, long? brightnessPct = null, string? effect = null, object? rgbwColor = null, object? rgbwwColor = null, object? colorName = null, object? hsColor = null, object? xyColor = null, object? colorTemp = null, long? brightness = null, object? white = null, string? profile = null, object? flash = null)
+    {
+        target.CallService("toggle", new LightToggleParameters { Transition = transition, RgbColor = rgbColor, ColorTempKelvin = colorTempKelvin, BrightnessPct = brightnessPct, Effect = effect, RgbwColor = rgbwColor, RgbwwColor = rgbwwColor, ColorName = colorName, HsColor = hsColor, XyColor = xyColor, ColorTemp = colorTemp, Brightness = brightness, White = white, Profile = profile, Flash = flash });
+    }
+
+    ///<summary>Turns off one or more lights.</summary>
+    public static void TurnOff(this ILightEntityCore target, LightTurnOffParameters data)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    ///<summary>Turns off one or more lights.</summary>
+    public static void TurnOff(this IEnumerable<ILightEntityCore> target, LightTurnOffParameters data)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    ///<summary>Turns off one or more lights.</summary>
+    ///<param name="target">The ILightEntityCore to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="flash"></param>
+    public static void TurnOff(this ILightEntityCore target, long? transition = null, object? flash = null)
+    {
+        target.CallService("turn_off", new LightTurnOffParameters { Transition = transition, Flash = flash });
+    }
+
+    ///<summary>Turns off one or more lights.</summary>
+    ///<param name="target">The IEnumerable&lt;ILightEntityCore&gt; to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="flash"></param>
+    public static void TurnOff(this IEnumerable<ILightEntityCore> target, long? transition = null, object? flash = null)
+    {
+        target.CallService("turn_off", new LightTurnOffParameters { Transition = transition, Flash = flash });
+    }
+
+    ///<summary>Turns on one or more lights and adjusts their properties, even when they are turned on already.</summary>
+    public static void TurnOn(this ILightEntityCore target, LightTurnOnParameters data)
+    {
+        target.CallService("turn_on", data);
+    }
+
+    ///<summary>Turns on one or more lights and adjusts their properties, even when they are turned on already.</summary>
+    public static void TurnOn(this IEnumerable<ILightEntityCore> target, LightTurnOnParameters data)
+    {
+        target.CallService("turn_on", data);
+    }
+
+    ///<summary>Turns on one or more lights and adjusts their properties, even when they are turned on already.</summary>
+    ///<param name="target">The ILightEntityCore to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="rgbColor">The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</param>
+    ///<param name="colorTempKelvin">Color temperature in Kelvin.</param>
+    ///<param name="brightnessPct">Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</param>
+    ///<param name="brightnessStepPct">Change brightness by a percentage.</param>
+    ///<param name="effect">Light effect.</param>
+    ///<param name="rgbwColor"> eg: [255, 100, 100, 50]</param>
+    ///<param name="rgbwwColor"> eg: [255, 100, 100, 50, 70]</param>
+    ///<param name="colorName"></param>
+    ///<param name="hsColor"> eg: [300, 70]</param>
+    ///<param name="xyColor"> eg: [0.52, 0.43]</param>
+    ///<param name="colorTemp"></param>
+    ///<param name="brightness"></param>
+    ///<param name="brightnessStep"></param>
+    ///<param name="white"></param>
+    ///<param name="profile"> eg: relax</param>
+    ///<param name="flash"></param>
+    public static void TurnOn(this ILightEntityCore target, long? transition = null, IReadOnlyCollection<int>? rgbColor = null, object? colorTempKelvin = null, long? brightnessPct = null, long? brightnessStepPct = null, string? effect = null, object? rgbwColor = null, object? rgbwwColor = null, object? colorName = null, object? hsColor = null, object? xyColor = null, object? colorTemp = null, long? brightness = null, long? brightnessStep = null, object? white = null, string? profile = null, object? flash = null)
+    {
+        target.CallService("turn_on", new LightTurnOnParameters { Transition = transition, RgbColor = rgbColor, ColorTempKelvin = colorTempKelvin, BrightnessPct = brightnessPct, BrightnessStepPct = brightnessStepPct, Effect = effect, RgbwColor = rgbwColor, RgbwwColor = rgbwwColor, ColorName = colorName, HsColor = hsColor, XyColor = xyColor, ColorTemp = colorTemp, Brightness = brightness, BrightnessStep = brightnessStep, White = white, Profile = profile, Flash = flash });
+    }
+
+    ///<summary>Turns on one or more lights and adjusts their properties, even when they are turned on already.</summary>
+    ///<param name="target">The IEnumerable&lt;ILightEntityCore&gt; to call this service for</param>
+    ///<param name="transition">Duration it takes to get to next state.</param>
+    ///<param name="rgbColor">The color in RGB format. A list of three integers between 0 and 255 representing the values of red, green, and blue. eg: [255, 100, 100]</param>
+    ///<param name="colorTempKelvin">Color temperature in Kelvin.</param>
+    ///<param name="brightnessPct">Number indicating the percentage of full brightness, where 0 turns the light off, 1 is the minimum brightness, and 100 is the maximum brightness.</param>
+    ///<param name="brightnessStepPct">Change brightness by a percentage.</param>
+    ///<param name="effect">Light effect.</param>
+    ///<param name="rgbwColor"> eg: [255, 100, 100, 50]</param>
+    ///<param name="rgbwwColor"> eg: [255, 100, 100, 50, 70]</param>
+    ///<param name="colorName"></param>
+    ///<param name="hsColor"> eg: [300, 70]</param>
+    ///<param name="xyColor"> eg: [0.52, 0.43]</param>
+    ///<param name="colorTemp"></param>
+    ///<param name="brightness"></param>
+    ///<param name="brightnessStep"></param>
+    ///<param name="white"></param>
+    ///<param name="profile"> eg: relax</param>
+    ///<param name="flash"></param>
+    public static void TurnOn(this IEnumerable<ILightEntityCore> target, long? transition = null, IReadOnlyCollection<int>? rgbColor = null, object? colorTempKelvin = null, long? brightnessPct = null, long? brightnessStepPct = null, string? effect = null, object? rgbwColor = null, object? rgbwwColor = null, object? colorName = null, object? hsColor = null, object? xyColor = null, object? colorTemp = null, long? brightness = null, long? brightnessStep = null, object? white = null, string? profile = null, object? flash = null)
+    {
+        target.CallService("turn_on", new LightTurnOnParameters { Transition = transition, RgbColor = rgbColor, ColorTempKelvin = colorTempKelvin, BrightnessPct = brightnessPct, BrightnessStepPct = brightnessStepPct, Effect = effect, RgbwColor = rgbwColor, RgbwwColor = rgbwwColor, ColorName = colorName, HsColor = hsColor, XyColor = xyColor, ColorTemp = colorTemp, Brightness = brightness, BrightnessStep = brightnessStep, White = white, Profile = profile, Flash = flash });
+    }
+}
+
+public partial record BinarySensorEntity : Entity<BinarySensorEntity, EntityState<BinarySensorAttributes>, BinarySensorAttributes>, IBinarySensorEntityCore
+{
+    public BinarySensorEntity(IHaContext haContext, string entityId) : base(haContext, entityId)
+    {
+    }
+
+    public BinarySensorEntity(IEntityCore entity) : base(entity)
+    {
+    }
+}
+
+public partial record BinarySensorAttributes
+{
+    [JsonPropertyName("device_class")]
+    public string? DeviceClass { get; init; }
+
+    [JsonPropertyName("friendly_name")]
+    public string? FriendlyName { get; init; }
+
+    [JsonPropertyName("termination")]
+    public string? Termination { get; init; }
+
+    [JsonPropertyName("id")]
+    public string? Id { get; init; }
+
+    [JsonPropertyName("model")]
+    public string? Model { get; init; }
+
+    [JsonPropertyName("mac")]
+    public string? Mac { get; init; }
+
+    [JsonPropertyName("ip")]
+    public string? Ip { get; init; }
+
+    [JsonPropertyName("new_fw")]
+    public bool? NewFw { get; init; }
+
+    [JsonPropertyName("fw_ver")]
+    public string? FwVer { get; init; }
+
+    [JsonPropertyName("icon")]
+    public string? Icon { get; init; }
+
+    [JsonPropertyName("wifi_sta")]
+    public object? WifiSta { get; init; }
+
+    [JsonPropertyName("cloud")]
+    public object? Cloud { get; init; }
+
+    [JsonPropertyName("mqtt")]
+    public object? Mqtt { get; init; }
+
+    [JsonPropertyName("time")]
+    public string? Time { get; init; }
+
+    [JsonPropertyName("unixtime")]
+    public double? Unixtime { get; init; }
+
+    [JsonPropertyName("serial")]
+    public double? Serial { get; init; }
+
+    [JsonPropertyName("has_update")]
+    public bool? HasUpdate { get; init; }
+
+    [JsonPropertyName("cfg_changed_cnt")]
+    public double? CfgChangedCnt { get; init; }
+
+    [JsonPropertyName("actions_stats")]
+    public object? ActionsStats { get; init; }
+
+    [JsonPropertyName("relays")]
+    public IReadOnlyList<object>? Relays { get; init; }
+
+    [JsonPropertyName("meters")]
+    public IReadOnlyList<object>? Meters { get; init; }
+
+    [JsonPropertyName("temperature")]
+    public double? Temperature { get; init; }
+
+    [JsonPropertyName("overtemperature")]
+    public bool? Overtemperature { get; init; }
+
+    [JsonPropertyName("tmp")]
+    public object? Tmp { get; init; }
+
+    [JsonPropertyName("update")]
+    public object? Update { get; init; }
+
+    [JsonPropertyName("ram_total")]
+    public double? RamTotal { get; init; }
+
+    [JsonPropertyName("ram_free")]
+    public double? RamFree { get; init; }
+
+    [JsonPropertyName("fs_size")]
+    public double? FsSize { get; init; }
+
+    [JsonPropertyName("fs_free")]
+    public double? FsFree { get; init; }
+
+    [JsonPropertyName("uptime")]
+    public double? Uptime { get; init; }
+
+    [JsonPropertyName("battery")]
+    public double? Battery { get; init; }
+
+    [JsonPropertyName("illuminance")]
+    public double? Illuminance { get; init; }
+
+    [JsonPropertyName("illuminance_lux")]
+    public double? IlluminanceLux { get; init; }
+
+    [JsonPropertyName("led_indication")]
+    public bool? LedIndication { get; init; }
+
+    [JsonPropertyName("occupancy")]
+    public bool? Occupancy { get; init; }
+
+    [JsonPropertyName("restored")]
+    public bool? Restored { get; init; }
+
+    [JsonPropertyName("supported_features")]
+    public double? SupportedFeatures { get; init; }
 }
 
 public partial class MediaPlayerEntities
@@ -158,6 +581,8 @@ public partial class SensorEntities
     {
         _haContext = haContext;
     }
+
+    public NumericSensorEntity _1eHalMotionSensorIlluminance => new(_haContext, "sensor.1e_hal_motion_sensor_illuminance");
 
     ///<summary>Solar production forecast Highest power peak time - today</summary>
     public SensorEntity PowerHighestPeakTimeToday => new(_haContext, "sensor.power_highest_peak_time_today");
