@@ -24,21 +24,21 @@ public record BoilerThermostat
         Rooms
             .Select(x => new Room
             {
-                Pid = new PidController
+                Pid = new PidController(logger)
                 {
                     Name = x.Name,
-                    Settings = x.PidSettings,
+                    Settings = x.PidSettings
                 },
                 Climates = x.Climates
             })
             .Select(x => x.Climates.Select(y => y.StateAllChangesWithCurrent()
                     .Where(z => z.New?.Attributes != null)
-                    .Select(z => z.New!.Attributes!.Temperature!.Value - z.New!.Attributes!.CurrentTemperature!.Value))
+                    .Select(z => (z.New!.Attributes!.HvacAction, Error: z.New!.Attributes!.Temperature!.Value - z.New!.Attributes!.CurrentTemperature!.Value)))
                 .CombineLatest()
-                .Select(y => y.Max())
+                .Select(y => y.Any(z => z.HvacAction != "idle") ? y.Select(z => z.Error).Max() : 0)
                 .Select(y => (x.Pid, Error: y))
                 .EmitLatestPeriodically(TimeSpan.FromMinutes(1), scheduler)
-                .Select(y => y.Pid.Update(y.Error, logger)))
+                .Select(y => y.Pid.Update(y.Error, DateTime.Now.Ticks)))
             .CombineLatest()
             .Select(x => x.Max())
             .Clamp(Boiler.MinTemp, Boiler.MaxTemp)
