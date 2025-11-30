@@ -24,7 +24,11 @@ public record BoilerThermostat
         Rooms
             .Select(x => new Room
             {
-                Pid = new PidController { Settings = x.PidSettings },
+                Pid = new PidController
+                {
+                    Name = x.Name,
+                    Settings = x.PidSettings,
+                },
                 Climates = x.Climates
             })
             .Select(x => x.Climates.Select(y => y.StateAllChangesWithCurrent()

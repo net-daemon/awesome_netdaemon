@@ -6,6 +6,7 @@ public class PidController
     private double _lastError;
     private DateTime? _lastTime;
 
+    public required string Name { get; init; }
     public required PidControllerSettings Settings { get; init; }
 
     public double Update(double error, ILogger logger)
@@ -32,7 +33,9 @@ public class PidController
         var kdPart = Settings.Kd * derivative;
         var output = kpPart + kiPart + kdPart + Settings.Bias;
 
-        logger.LogInformation("PID Update - Error: {Error}, Output: {Output}, P: {P}, I: {I}, D: {D}, dt: {Dt}", error,
+        logger.LogInformation("PID Update for {Name} - Error: {Error}, Output: {Output}, P: {P}, I: {I}, D: {D}, dt: {Dt}",
+            Name,
+            error,
             output,
             kpPart,
             kiPart,

@@ -23,6 +23,7 @@ public class HeatingApp
             [
                 new RoomSettings
                 {
+                    Name = "Woonkamer",
                     PidSettings = pidSettings,
                     Climates =
                     [
