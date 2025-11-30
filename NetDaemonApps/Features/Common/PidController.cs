@@ -1,29 +1,29 @@
 ﻿namespace AwesomeNetdaemon.Features.Common;
 
-public class PidController
+public class PidController(ILogger logger)
 {
     private double _integral;
     private double _lastError;
-    private DateTime? _lastTime;
+    private long? _lastTime;
 
     public required string Name { get; init; }
     public required PidControllerSettings Settings { get; init; }
 
-    public double Update(double error, ILogger logger)
+    public double Update(double error, long now)
     {
-        var now = DateTime.UtcNow;
-        var dt = _lastTime.HasValue ? (double)(now - _lastTime.Value).Ticks / Settings.TimeFactor.Ticks : 0.0;
+        var dt = _lastTime.HasValue ? (double)(now - _lastTime.Value) / Settings.TimeFactor : 0.0;
         _lastTime = now;
 
         var derivative = 0.0;
         if (dt > 0) derivative = (error - _lastError) / dt;
 
-        _integral += error * dt;
-
         if (dt > 0)
         {
             var decay = Math.Exp(-dt / Settings.IntegrationTime);
-            _integral = _integral * decay + error * dt;
+            var denom = 1.0 - Math.Exp(-1.0);
+            var scale = Settings.IntegrationTime / dt * (1.0 - decay) / denom;
+
+            _integral = _integral * decay + error * dt * scale;
         }
 
         _lastError = error;
