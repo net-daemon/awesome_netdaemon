@@ -1,4 +1,7 @@
 ﻿using System.Globalization;
+using System.Reactive.Concurrency;
+using AwesomeNetdaemon.Apps;
+using AwesomeNetdaemon.Features.Common;
 using MathNet.Numerics.Statistics;
 using NetDaemon.HassModel.Entities;
 
@@ -97,4 +100,56 @@ public static class ObservableExtensions
             return false;
         });
     }
+
+    public static IObservable<double> ToValueObservable(this ScheduleEntity schedule) =>
+        schedule.StateAllChangesWithCurrent()
+            .Select(x => x.New?.Attributes?.Value ?? 15);
+
+    public static IObservable<double> OverrideValueIfAllNotPresent(this IObservable<double> observable, double value, params PersonEntity[] persons) =>
+        observable.CombineLatest(persons.Select(x => x
+                    .StateChangesWithCurrent()
+                    .Select(y => y.New.IsHome()))
+                .CombineLatest()
+                .Select(x => x.Contains(true)))
+            .Select(x => x.Second ? x.First : value);
+
+    public static void BindToClimate(this IObservable<double> observable, ClimateEntity climate) =>
+        observable.Subscribe(x => { climate.SetTemperature(x); });
+
+    public static void BindToClimate(this IObservable<double> observable, params ClimateEntity[] climates) =>
+        observable.Subscribe(x =>
+        {
+            foreach (var climate in climates) climate.SetTemperature(x);
+        });
+
+    public static void BindTo(this INumberEntityCore numberEntity, NumericSensorEntity sensor, IScheduler scheduler) =>
+        sensor.StateChangesWithCurrent()
+            .Where(x => x.New?.State != null)
+            .CombineLatest(Observable.Interval(TimeSpan.FromMinutes(50), scheduler)) // Prevent trv from thinking connection was lost.
+            .Select(x => x.First.New!.State!.Value)
+            .Subscribe(x => { numberEntity.SetValue(x.ToString(CultureInfo.InvariantCulture)); });
+
+    public static IObservable<double> Clamp(this IObservable<double> observable, double min, double max) =>
+        observable.Select(x => Math.Clamp(x, min, max));
+
+    public static IObservable<T> EmitLatestPeriodically<T>(this IObservable<T> observable, TimeSpan timeSpan, IScheduler scheduler) =>
+        observable.CombineLatest(Observable.Interval(timeSpan, scheduler).Prepend(0))
+            .Select(x => x.First);
+
+    public static void BindTo(this IObservable<bool> observable, ISwitchEntityCore switchEntity, ILogger? logger = null) =>
+        observable.Subscribe(x =>
+        {
+            logger?.LogInformation("Setting {EntityId} to {Target}", switchEntity.EntityId, x);
+            if (x)
+                switchEntity.TurnOn();
+            else
+                switchEntity.TurnOff();
+        });
+
+    public static void BindTo(this IObservable<double> observable, INumberEntityCore numberEntity, ILogger? logger = null) =>
+        observable.Subscribe(x =>
+        {
+            logger?.LogInformation("Setting {EntityId} to {Target}", numberEntity.EntityId, x);
+            numberEntity.SetValue(x.ToString(CultureInfo.InvariantCulture));
+        });
 }

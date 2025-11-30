@@ -75,8 +75,57 @@ public static class GeneratedExtensions
     }
 }
 
+public partial class SwitchEntities
+{
+    private readonly IHaContext _haContext;
+    public SwitchEntities(IHaContext haContext)
+    {
+        _haContext = haContext;
+    }
+
+    /// <summary>Enumerates all switch entities currently registered (at runtime) in Home Assistant as SwitchEntity</summary>
+    public IEnumerable<SwitchEntity> EnumerateAll() => _haContext.GetAllEntities().Where(e => e.EntityId.StartsWith("switch.")).Select(e => new SwitchEntity(e));
+
+    ///<summary>Opentherm Thermostat ch_enable</summary>
+    public SwitchEntity OpenthermThermostatChEnable => new(_haContext, "switch.opentherm_thermostat_ch_enable");
+}
+
+public partial class ClimateEntities
+{
+    private readonly IHaContext _haContext;
+    public ClimateEntities(IHaContext haContext)
+    {
+        _haContext = haContext;
+    }
+
+    /// <summary>Enumerates all climate entities currently registered (at runtime) in Home Assistant as ClimateEntity</summary>
+    public IEnumerable<ClimateEntity> EnumerateAll() => _haContext.GetAllEntities().Where(e => e.EntityId.StartsWith("climate.")).Select(e => new ClimateEntity(e));
+
+    ///<summary>beganegrond/woonkamer/radiator</summary>
+    public ClimateEntity BeganegrondWoonkamerRadiator => new(_haContext, "climate.beganegrond_woonkamer_radiator");
+}
+
+public partial class NumberEntities
+{
+    private readonly IHaContext _haContext;
+
+    public NumberEntities(IHaContext haContext)
+    {
+        _haContext = haContext;
+    }
+
+    /// <summary>Enumerates all number entities currently registered (at runtime) in Home Assistant as NumberEntity</summary>
+    public IEnumerable<NumberEntity> EnumerateAll() => _haContext.GetAllEntities().Where(e => e.EntityId.StartsWith("number.")).Select(e => new NumberEntity(e));
+
+    ///<summary>Opentherm Thermostat t_set</summary>
+    public NumberEntity OpenthermThermostatTSet => new(_haContext, "number.opentherm_thermostat_t_set");
+}
+
 public interface IEntities
 {
+    ClimateEntities Climate { get; }
+    SwitchEntities Switch { get; }
+    NumberEntities Number { get; }
     LightEntities Light { get; }
     BinarySensorEntities BinarySensor { get; }
 
@@ -109,6 +158,9 @@ public partial class Entities : IEntities
         _haContext = haContext;
     }
 
+    public ClimateEntities Climate => new(_haContext);
+    public SwitchEntities Switch => new(_haContext);
+    public NumberEntities Number => new(_haContext);
     public LightEntities Light => new(_haContext);
     public BinarySensorEntities BinarySensor => new(_haContext);
     public MediaPlayerEntities MediaPlayer => new(_haContext);
@@ -132,6 +184,646 @@ public partial class LightEntities
     }
 
     public LightEntity _1eHalLampen => new(_haContext, "light.1e_hal_lampen");
+}
+
+public partial record NumberSetValueParameters
+{
+    ///<summary> eg: 42</summary>
+    [JsonPropertyName("value")]
+    public string? Value { get; init; }
+}
+
+public static class NumberEntityExtensionMethods
+{
+    public static void SetValue(this INumberEntityCore target, NumberSetValueParameters data)
+    {
+        target.CallService("set_value", data);
+    }
+
+    public static void SetValue(this IEnumerable<INumberEntityCore> target, NumberSetValueParameters data)
+    {
+        target.CallService("set_value", data);
+    }
+
+    ///<param name="target">The INumberEntityCore to call this service for</param>
+    ///<param name="value"> eg: 42</param>
+    public static void SetValue(this INumberEntityCore target, string value)
+    {
+        target.CallService("set_value", new NumberSetValueParameters { Value = value });
+    }
+
+    ///<param name="target">The IEnumerable&lt;INumberEntityCore&gt; to call this service for</param>
+    ///<param name="value"> eg: 42</param>
+    public static void SetValue(this IEnumerable<INumberEntityCore> target, string value)
+    {
+        target.CallService("set_value", new NumberSetValueParameters { Value = value });
+    }
+}
+
+public partial record ClimateEntity : Entity<ClimateEntity, EntityState<ClimateAttributes>, ClimateAttributes>, IClimateEntityCore
+{
+    public ClimateEntity(IHaContext haContext, string entityId) : base(haContext, entityId)
+    {
+    }
+
+    public ClimateEntity(IEntityCore entity) : base(entity)
+    {
+    }
+}
+
+public partial record ClimateAttributes
+{
+    [JsonPropertyName("hvac_modes")]
+    public IReadOnlyList<string>? HvacModes { get; init; }
+
+    [JsonPropertyName("min_temp")]
+    public double? MinTemp { get; init; }
+
+    [JsonPropertyName("max_temp")]
+    public double? MaxTemp { get; init; }
+
+    [JsonPropertyName("target_temp_step")]
+    public double? TargetTempStep { get; init; }
+
+    [JsonPropertyName("preset_modes")]
+    public IReadOnlyList<string>? PresetModes { get; init; }
+
+    [JsonPropertyName("current_temperature")]
+    public double? CurrentTemperature { get; init; }
+
+    [JsonPropertyName("temperature")]
+    public double? Temperature { get; init; }
+
+    [JsonPropertyName("current_humidity")]
+    public double? CurrentHumidity { get; init; }
+
+    [JsonPropertyName("hvac_action")]
+    public string? HvacAction { get; init; }
+
+    [JsonPropertyName("preset_mode")]
+    public string? PresetMode { get; init; }
+
+    [JsonPropertyName("offset_celsius")]
+    public double? OffsetCelsius { get; init; }
+
+    [JsonPropertyName("offset_fahrenheit")]
+    public double? OffsetFahrenheit { get; init; }
+
+    [JsonPropertyName("default_overlay_type")]
+    public string? DefaultOverlayType { get; init; }
+
+    [JsonPropertyName("default_overlay_seconds")]
+    public object? DefaultOverlaySeconds { get; init; }
+
+    [JsonPropertyName("friendly_name")]
+    public string? FriendlyName { get; init; }
+
+    [JsonPropertyName("supported_features")]
+    public double? SupportedFeatures { get; init; }
+
+    [JsonPropertyName("restored")]
+    public bool? Restored { get; init; }
+
+    [JsonPropertyName("error")]
+    public double? Error { get; init; }
+
+    [JsonPropertyName("integral")]
+    public double? Integral { get; init; }
+
+    [JsonPropertyName("derivative")]
+    public double? Derivative { get; init; }
+
+    [JsonPropertyName("proportional")]
+    public double? Proportional { get; init; }
+
+    [JsonPropertyName("history_size")]
+    public double? HistorySize { get; init; }
+
+    [JsonPropertyName("collected_errors")]
+    public double? CollectedErrors { get; init; }
+
+    [JsonPropertyName("integral_enabled")]
+    public bool? IntegralEnabled { get; init; }
+
+    [JsonPropertyName("boiler_temperature_cold")]
+    public object? BoilerTemperatureCold { get; init; }
+
+    [JsonPropertyName("boiler_temperature_tracking")]
+    public bool? BoilerTemperatureTracking { get; init; }
+
+    [JsonPropertyName("boiler_temperature_derivative")]
+    public object? BoilerTemperatureDerivative { get; init; }
+
+    [JsonPropertyName("pre_custom_temperature")]
+    public double? PreCustomTemperature { get; init; }
+
+    [JsonPropertyName("pre_activity_temperature")]
+    public object? PreActivityTemperature { get; init; }
+
+    [JsonPropertyName("derivative_enabled")]
+    public bool? DerivativeEnabled { get; init; }
+
+    [JsonPropertyName("derivative_raw")]
+    public double? DerivativeRaw { get; init; }
+
+    [JsonPropertyName("current_kp")]
+    public double? CurrentKp { get; init; }
+
+    [JsonPropertyName("current_ki")]
+    public double? CurrentKi { get; init; }
+
+    [JsonPropertyName("current_kd")]
+    public double? CurrentKd { get; init; }
+
+    [JsonPropertyName("rooms")]
+    public object? Rooms { get; init; }
+
+    [JsonPropertyName("setpoint")]
+    public object? Setpoint { get; init; }
+
+    [JsonPropertyName("summer_simmer_index")]
+    public double? SummerSimmerIndex { get; init; }
+
+    [JsonPropertyName("summer_simmer_perception")]
+    public string? SummerSimmerPerception { get; init; }
+
+    [JsonPropertyName("valves_open")]
+    public bool? ValvesOpen { get; init; }
+
+    [JsonPropertyName("heating_curve")]
+    public double? HeatingCurve { get; init; }
+
+    [JsonPropertyName("minimum_setpoint")]
+    public double? MinimumSetpoint { get; init; }
+
+    [JsonPropertyName("requested_setpoint")]
+    public double? RequestedSetpoint { get; init; }
+
+    [JsonPropertyName("outside_temperature")]
+    public double? OutsideTemperature { get; init; }
+
+    [JsonPropertyName("optimal_coefficient")]
+    public object? OptimalCoefficient { get; init; }
+
+    [JsonPropertyName("coefficient_derivative")]
+    public object? CoefficientDerivative { get; init; }
+
+    [JsonPropertyName("relative_modulation_value")]
+    public double? RelativeModulationValue { get; init; }
+
+    [JsonPropertyName("relative_modulation_state")]
+    public string? RelativeModulationState { get; init; }
+
+    [JsonPropertyName("relative_modulation_enabled")]
+    public bool? RelativeModulationEnabled { get; init; }
+
+    [JsonPropertyName("pulse_width_modulation_state")]
+    public string? PulseWidthModulationState { get; init; }
+
+    [JsonPropertyName("pulse_width_modulation_enabled")]
+    public bool? PulseWidthModulationEnabled { get; init; }
+
+    [JsonPropertyName("pulse_width_modulation_duty_cycle")]
+    public object? PulseWidthModulationDutyCycle { get; init; }
+}
+
+public partial record ClimateSetTemperatureParameters
+{
+    [JsonPropertyName("temperature")]
+    public double? Temperature { get; init; }
+
+    [JsonPropertyName("target_temp_high")]
+    public double? TargetTempHigh { get; init; }
+
+    [JsonPropertyName("target_temp_low")]
+    public double? TargetTempLow { get; init; }
+
+    [JsonPropertyName("hvac_mode")]
+    public object? HvacMode { get; init; }
+}
+
+public partial record ClimateSetFanModeParameters
+{
+    ///<summary> eg: low</summary>
+    [JsonPropertyName("fan_mode")]
+    public string? FanMode { get; init; }
+}
+
+public partial record ClimateSetHumidityParameters
+{
+    [JsonPropertyName("humidity")]
+    public long? Humidity { get; init; }
+}
+
+public partial record ClimateSetHvacModeParameters
+{
+    [JsonPropertyName("hvac_mode")]
+    public object? HvacMode { get; init; }
+}
+
+public partial record ClimateSetPresetModeParameters
+{
+    ///<summary> eg: away</summary>
+    [JsonPropertyName("preset_mode")]
+    public string? PresetMode { get; init; }
+}
+
+public partial record ClimateSetSwingHorizontalModeParameters
+{
+    ///<summary> eg: on</summary>
+    [JsonPropertyName("swing_horizontal_mode")]
+    public string? SwingHorizontalMode { get; init; }
+}
+
+public partial record ClimateSetSwingModeParameters
+{
+    ///<summary> eg: on</summary>
+    [JsonPropertyName("swing_mode")]
+    public string? SwingMode { get; init; }
+}
+
+public partial record ScheduleEntity : Entity<ScheduleEntity, EntityState<ScheduleAttributes>, ScheduleAttributes>, IScheduleEntityCore
+{
+    public ScheduleEntity(IHaContext haContext, string entityId) : base(haContext, entityId)
+    {
+    }
+
+    public ScheduleEntity(IEntityCore entity) : base(entity)
+    {
+    }
+}
+
+public partial record ScheduleAttributes
+{
+    [JsonPropertyName("editable")]
+    public bool? Editable { get; init; }
+
+    [JsonPropertyName("next_event")]
+    public string? NextEvent { get; init; }
+
+    [JsonPropertyName("friendly_name")]
+    public string? FriendlyName { get; init; }
+
+    [JsonPropertyName("value")]
+    public double? Value { get; init; }
+
+    [JsonPropertyName("icon")]
+    public string? Icon { get; init; }
+}
+
+public partial record NumberEntity : NumericEntity<NumberEntity, NumericEntityState<NumberAttributes>, NumberAttributes>, INumberEntityCore
+{
+    public NumberEntity(IHaContext haContext, string entityId) : base(haContext, entityId)
+    {
+    }
+
+    public NumberEntity(IEntityCore entity) : base(entity)
+    {
+    }
+}
+
+public partial record NumberAttributes
+{
+    [JsonPropertyName("min")]
+    public double? Min { get; init; }
+
+    [JsonPropertyName("max")]
+    public double? Max { get; init; }
+
+    [JsonPropertyName("step")]
+    public double? Step { get; init; }
+
+    [JsonPropertyName("mode")]
+    public string? Mode { get; init; }
+
+    [JsonPropertyName("unit_of_measurement")]
+    public string? UnitOfMeasurement { get; init; }
+
+    [JsonPropertyName("icon")]
+    public string? Icon { get; init; }
+
+    [JsonPropertyName("friendly_name")]
+    public string? FriendlyName { get; init; }
+
+    [JsonPropertyName("device_class")]
+    public string? DeviceClass { get; init; }
+
+    [JsonPropertyName("restored")]
+    public bool? Restored { get; init; }
+
+    [JsonPropertyName("supported_features")]
+    public double? SupportedFeatures { get; init; }
+}
+
+public partial record SwitchEntity : Entity<SwitchEntity, EntityState<SwitchAttributes>, SwitchAttributes>, ISwitchEntityCore
+{
+    public SwitchEntity(IHaContext haContext, string entityId) : base(haContext, entityId)
+    {
+    }
+
+    public SwitchEntity(IEntityCore entity) : base(entity)
+    {
+    }
+}
+
+public partial record SwitchAttributes
+{
+    [JsonPropertyName("icon")]
+    public string? Icon { get; init; }
+
+    [JsonPropertyName("friendly_name")]
+    public string? FriendlyName { get; init; }
+
+    [JsonPropertyName("brightness")]
+    public double? Brightness { get; init; }
+
+    [JsonPropertyName("color")]
+    public object? Color { get; init; }
+
+    [JsonPropertyName("color_mode")]
+    public string? ColorMode { get; init; }
+
+    [JsonPropertyName("color_power_on_behavior")]
+    public object? ColorPowerOnBehavior { get; init; }
+
+    [JsonPropertyName("color_temp")]
+    public double? ColorTemp { get; init; }
+
+    [JsonPropertyName("do_not_disturb")]
+    public object? DoNotDisturb { get; init; }
+
+    [JsonPropertyName("restored")]
+    public bool? Restored { get; init; }
+
+    [JsonPropertyName("supported_features")]
+    public double? SupportedFeatures { get; init; }
+
+    [JsonPropertyName("weekdays")]
+    public IReadOnlyList<string>? Weekdays { get; init; }
+
+    [JsonPropertyName("timeslots")]
+    public IReadOnlyList<string>? Timeslots { get; init; }
+
+    [JsonPropertyName("entities")]
+    public IReadOnlyList<string>? Entities { get; init; }
+
+    [JsonPropertyName("actions")]
+    public IReadOnlyList<object>? Actions { get; init; }
+
+    [JsonPropertyName("current_slot")]
+    public double? CurrentSlot { get; init; }
+
+    [JsonPropertyName("next_slot")]
+    public double? NextSlot { get; init; }
+
+    [JsonPropertyName("next_trigger")]
+    public string? NextTrigger { get; init; }
+
+    [JsonPropertyName("tags")]
+    public IReadOnlyList<object>? Tags { get; init; }
+
+    [JsonPropertyName("device_class")]
+    public string? DeviceClass { get; init; }
+}
+
+public static class ClimateEntityExtensionMethods
+{
+    public static void SetFanMode(this IClimateEntityCore target, ClimateSetFanModeParameters data)
+    {
+        target.CallService("set_fan_mode", data);
+    }
+
+    public static void SetFanMode(this IEnumerable<IClimateEntityCore> target, ClimateSetFanModeParameters data)
+    {
+        target.CallService("set_fan_mode", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="fanMode"> eg: low</param>
+    public static void SetFanMode(this IClimateEntityCore target, string fanMode)
+    {
+        target.CallService("set_fan_mode", new ClimateSetFanModeParameters { FanMode = fanMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="fanMode"> eg: low</param>
+    public static void SetFanMode(this IEnumerable<IClimateEntityCore> target, string fanMode)
+    {
+        target.CallService("set_fan_mode", new ClimateSetFanModeParameters { FanMode = fanMode });
+    }
+
+    public static void SetHumidity(this IClimateEntityCore target, ClimateSetHumidityParameters data)
+    {
+        target.CallService("set_humidity", data);
+    }
+
+    public static void SetHumidity(this IEnumerable<IClimateEntityCore> target, ClimateSetHumidityParameters data)
+    {
+        target.CallService("set_humidity", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="humidity"></param>
+    public static void SetHumidity(this IClimateEntityCore target, long humidity)
+    {
+        target.CallService("set_humidity", new ClimateSetHumidityParameters { Humidity = humidity });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="humidity"></param>
+    public static void SetHumidity(this IEnumerable<IClimateEntityCore> target, long humidity)
+    {
+        target.CallService("set_humidity", new ClimateSetHumidityParameters { Humidity = humidity });
+    }
+
+    public static void SetHvacMode(this IClimateEntityCore target, ClimateSetHvacModeParameters data)
+    {
+        target.CallService("set_hvac_mode", data);
+    }
+
+    public static void SetHvacMode(this IEnumerable<IClimateEntityCore> target, ClimateSetHvacModeParameters data)
+    {
+        target.CallService("set_hvac_mode", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="hvacMode"></param>
+    public static void SetHvacMode(this IClimateEntityCore target, object? hvacMode = null)
+    {
+        target.CallService("set_hvac_mode", new ClimateSetHvacModeParameters { HvacMode = hvacMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="hvacMode"></param>
+    public static void SetHvacMode(this IEnumerable<IClimateEntityCore> target, object? hvacMode = null)
+    {
+        target.CallService("set_hvac_mode", new ClimateSetHvacModeParameters { HvacMode = hvacMode });
+    }
+
+    public static void SetPresetMode(this IClimateEntityCore target, ClimateSetPresetModeParameters data)
+    {
+        target.CallService("set_preset_mode", data);
+    }
+
+    public static void SetPresetMode(this IEnumerable<IClimateEntityCore> target, ClimateSetPresetModeParameters data)
+    {
+        target.CallService("set_preset_mode", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="presetMode"> eg: away</param>
+    public static void SetPresetMode(this IClimateEntityCore target, string presetMode)
+    {
+        target.CallService("set_preset_mode", new ClimateSetPresetModeParameters { PresetMode = presetMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="presetMode"> eg: away</param>
+    public static void SetPresetMode(this IEnumerable<IClimateEntityCore> target, string presetMode)
+    {
+        target.CallService("set_preset_mode", new ClimateSetPresetModeParameters { PresetMode = presetMode });
+    }
+
+    public static void SetSwingHorizontalMode(this IClimateEntityCore target, ClimateSetSwingHorizontalModeParameters data)
+    {
+        target.CallService("set_swing_horizontal_mode", data);
+    }
+
+    public static void SetSwingHorizontalMode(this IEnumerable<IClimateEntityCore> target, ClimateSetSwingHorizontalModeParameters data)
+    {
+        target.CallService("set_swing_horizontal_mode", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="swingHorizontalMode"> eg: on</param>
+    public static void SetSwingHorizontalMode(this IClimateEntityCore target, string swingHorizontalMode)
+    {
+        target.CallService("set_swing_horizontal_mode", new ClimateSetSwingHorizontalModeParameters { SwingHorizontalMode = swingHorizontalMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="swingHorizontalMode"> eg: on</param>
+    public static void SetSwingHorizontalMode(this IEnumerable<IClimateEntityCore> target, string swingHorizontalMode)
+    {
+        target.CallService("set_swing_horizontal_mode", new ClimateSetSwingHorizontalModeParameters { SwingHorizontalMode = swingHorizontalMode });
+    }
+
+    public static void SetSwingMode(this IClimateEntityCore target, ClimateSetSwingModeParameters data)
+    {
+        target.CallService("set_swing_mode", data);
+    }
+
+    public static void SetSwingMode(this IEnumerable<IClimateEntityCore> target, ClimateSetSwingModeParameters data)
+    {
+        target.CallService("set_swing_mode", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="swingMode"> eg: on</param>
+    public static void SetSwingMode(this IClimateEntityCore target, string swingMode)
+    {
+        target.CallService("set_swing_mode", new ClimateSetSwingModeParameters { SwingMode = swingMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="swingMode"> eg: on</param>
+    public static void SetSwingMode(this IEnumerable<IClimateEntityCore> target, string swingMode)
+    {
+        target.CallService("set_swing_mode", new ClimateSetSwingModeParameters { SwingMode = swingMode });
+    }
+
+    public static void SetTemperature(this IClimateEntityCore target, ClimateSetTemperatureParameters data)
+    {
+        target.CallService("set_temperature", data);
+    }
+
+    public static void SetTemperature(this IEnumerable<IClimateEntityCore> target, ClimateSetTemperatureParameters data)
+    {
+        target.CallService("set_temperature", data);
+    }
+
+    ///<param name="target">The IClimateEntityCore to call this service for</param>
+    ///<param name="temperature"></param>
+    ///<param name="targetTempHigh"></param>
+    ///<param name="targetTempLow"></param>
+    ///<param name="hvacMode"></param>
+    public static void SetTemperature(this IClimateEntityCore target, double? temperature = null, double? targetTempHigh = null, double? targetTempLow = null, object? hvacMode = null)
+    {
+        target.CallService("set_temperature", new ClimateSetTemperatureParameters { Temperature = temperature, TargetTempHigh = targetTempHigh, TargetTempLow = targetTempLow, HvacMode = hvacMode });
+    }
+
+    ///<param name="target">The IEnumerable&lt;IClimateEntityCore&gt; to call this service for</param>
+    ///<param name="temperature"></param>
+    ///<param name="targetTempHigh"></param>
+    ///<param name="targetTempLow"></param>
+    ///<param name="hvacMode"></param>
+    public static void SetTemperature(this IEnumerable<IClimateEntityCore> target, double? temperature = null, double? targetTempHigh = null, double? targetTempLow = null, object? hvacMode = null)
+    {
+        target.CallService("set_temperature", new ClimateSetTemperatureParameters { Temperature = temperature, TargetTempHigh = targetTempHigh, TargetTempLow = targetTempLow, HvacMode = hvacMode });
+    }
+
+    public static void Toggle(this IClimateEntityCore target, object? data = null)
+    {
+        target.CallService("toggle", data);
+    }
+
+    public static void Toggle(this IEnumerable<IClimateEntityCore> target, object? data = null)
+    {
+        target.CallService("toggle", data);
+    }
+
+    public static void TurnOff(this IClimateEntityCore target, object? data = null)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    public static void TurnOff(this IEnumerable<IClimateEntityCore> target, object? data = null)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    public static void TurnOn(this IClimateEntityCore target, object? data = null)
+    {
+        target.CallService("turn_on", data);
+    }
+
+    public static void TurnOn(this IEnumerable<IClimateEntityCore> target, object? data = null)
+    {
+        target.CallService("turn_on", data);
+    }
+}
+
+public static class SwitchEntityExtensionMethods
+{
+    public static void Toggle(this ISwitchEntityCore target, object? data = null)
+    {
+        target.CallService("toggle", data);
+    }
+
+    public static void Toggle(this IEnumerable<ISwitchEntityCore> target, object? data = null)
+    {
+        target.CallService("toggle", data);
+    }
+
+    public static void TurnOff(this ISwitchEntityCore target, object? data = null)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    public static void TurnOff(this IEnumerable<ISwitchEntityCore> target, object? data = null)
+    {
+        target.CallService("turn_off", data);
+    }
+
+    public static void TurnOn(this ISwitchEntityCore target, object? data = null)
+    {
+        target.CallService("turn_on", data);
+    }
+
+    public static void TurnOn(this IEnumerable<ISwitchEntityCore> target, object? data = null)
+    {
+        target.CallService("turn_on", data);
+    }
 }
 
 public partial record LightTurnOnParameters
