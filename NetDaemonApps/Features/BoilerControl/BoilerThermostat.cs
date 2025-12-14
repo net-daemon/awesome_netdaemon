@@ -8,6 +8,7 @@ public record BoilerThermostat
 {
     public required Boiler Boiler { get; init; }
     public required RoomSettings[] Rooms { get; init; }
+    public required NumericSensorEntity OutsideTemperatureSensor { get; init; }
 
     public void Run(IScheduler scheduler, ILogger logger)
     {
@@ -22,27 +23,36 @@ public record BoilerThermostat
             .BindTo(Boiler.EnableEntity, logger);
 
         Rooms
-            .Select(x => new Room
+            .Select(roomSettings => new Room
             {
                 Pid = new PidController(logger)
                 {
-                    Name = x.Name,
-                    Settings = x.PidSettings
+                    Name = roomSettings.Name,
+                    Settings = roomSettings.PidSettings
                 },
-                Climates = x.Climates
+                Equitherm = new EquithermController
+                {
+                    Settings = roomSettings.EquithermSettings
+                },
+                Climates = roomSettings.Climates
             })
-            .Select(x => x.Climates.Select(y => y.StateAllChangesWithCurrent()
-                    .Where(z => z.New?.Attributes != null)
-                    .Select(z => (z.New!.Attributes!.HvacAction, Error: z.New!.Attributes!.Temperature!.Value - z.New!.Attributes!.CurrentTemperature!.Value)))
+            .Select(room => room.Climates.Select(y => y.StateAllChangesWithCurrent()
+                    .Where(state => state.New?.Attributes != null)
+                    .Select(state => state.New!.Attributes!.Temperature!.Value - state.New!.Attributes!.CurrentTemperature!.Value)
+                    .Select(x => x))
                 .CombineLatest()
-                .Select(y => y.Any(z => z.HvacAction != "idle") ? y.Select(z => z.Error).Max() : 0)
-                .Select(y => (x.Pid, Error: y))
+                .Select(errors => Math.Max(errors.Select(error => error).Max(), 0))
                 .EmitLatestPeriodically(TimeSpan.FromMinutes(1), scheduler)
-                .Select(y => y.Pid.Update(y.Error, DateTime.Now.Ticks)))
+                .MovingAverage(5)
+                .CombineLatest(OutsideTemperatureSensor.StateChangesWithCurrent()
+                    .Select(x => x.New?.State ?? 0))
+                .Select(x => room.Equitherm.GetHeatingCurveTemperature(x.Second) + room.Pid.Update(x.First, DateTime.Now.Ticks)))
             .CombineLatest()
-            .Select(x => x.Max())
+            .Select(pidOutputs => pidOutputs.Max())
             .Clamp(Boiler.MinTemp, Boiler.MaxTemp)
             .DistinctUntilChanged()
             .BindTo(Boiler.SetPointEntity, logger);
     }
 }
+
+
