@@ -131,8 +131,6 @@ public interface IEntities
 
     MediaPlayerEntities MediaPlayer { get; }
 
-    PersonEntities Person { get; }
-
     SensorEntities Sensor { get; }
 
     SunEntities Sun { get; }
@@ -148,6 +146,8 @@ public interface IEntities
     InputButtonEntities InputButton { get; }
 
     InputBooleanEntities InputBoolean { get; }
+    ScheduleEntities Schedule { get; }
+    PersonEntities Person { get; }
 }
 
 public partial class Entities : IEntities
@@ -159,6 +159,7 @@ public partial class Entities : IEntities
     }
 
     public ClimateEntities Climate => new(_haContext);
+    public ScheduleEntities Schedule => new(_haContext);
     public SwitchEntities Switch => new(_haContext);
     public NumberEntities Number => new(_haContext);
     public LightEntities Light => new(_haContext);
@@ -173,6 +174,20 @@ public partial class Entities : IEntities
     public CounterEntities Counter => new(_haContext);
     public InputButtonEntities InputButton => new(_haContext);
     public InputBooleanEntities InputBoolean => new(_haContext);
+}
+
+public partial class ScheduleEntities
+{
+    private readonly IHaContext _haContext;
+    public ScheduleEntities(IHaContext haContext)
+    {
+        _haContext = haContext;
+    }
+
+    /// <summary>Enumerates all schedule entities currently registered (at runtime) in Home Assistant as ScheduleEntity</summary>
+    public IEnumerable<ScheduleEntity> EnumerateAll() => _haContext.GetAllEntities().Where(e => e.EntityId.StartsWith("schedule.")).Select(e => new ScheduleEntity(e));
+    ///<summary>Woonkamer heating</summary>
+    public ScheduleEntity WoonkamerHeating => new(_haContext, "schedule.woonkamer_heating");
 }
 
 public partial class LightEntities
@@ -1276,6 +1291,7 @@ public partial class SensorEntities
 
     public NumericSensorEntity _1eHalMotionSensorIlluminance => new(_haContext, "sensor.1e_hal_motion_sensor_illuminance");
 
+    public NumericSensorEntity OutsideTemperature => new(_haContext, "sensor.outside_temperature");
     ///<summary>Solar production forecast Highest power peak time - today</summary>
     public SensorEntity PowerHighestPeakTimeToday => new(_haContext, "sensor.power_highest_peak_time_today");
     ///<summary>Solar production forecast Highest power peak time - tomorrow</summary>

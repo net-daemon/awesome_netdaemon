@@ -1,11 +1,11 @@
-﻿namespace AwesomeNetdaemon.Features.Common;
+﻿namespace AwesomeNetdaemon.Features.BoilerControl;
 
 public record PidControllerSettings
 {
     /// <summary>
     ///     The time over which the integral term accumulates error before it decays so much to be insignificant.
     /// </summary>
-    public long IntegrationTime { get; init; } = TimeSpan.FromMinutes(30).Ticks;
+    public long IntegrationTime { get; init; } = 30;
 
     /// <summary>
     ///     The time after which the dt is considered to equal to 1.
@@ -26,9 +26,4 @@ public record PidControllerSettings
     ///     Determine how strongly the controller responds to the current error.
     /// </summary>
     public required double Kp { get; init; }
-
-    /// <summary>
-    ///     A constant value added to the output.
-    /// </summary>
-    public required double Bias { get; init; }
 }

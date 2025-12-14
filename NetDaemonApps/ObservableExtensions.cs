@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Reactive.Concurrency;
-using AwesomeNetdaemon.Apps;
 using AwesomeNetdaemon.Features.Common;
 using MathNet.Numerics.Statistics;
 using NetDaemon.HassModel.Entities;

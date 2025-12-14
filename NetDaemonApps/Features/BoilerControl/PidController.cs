@@ -1,4 +1,4 @@
-﻿namespace AwesomeNetdaemon.Features.Common;
+﻿namespace AwesomeNetdaemon.Features.BoilerControl;
 
 public class PidController(ILogger logger)
 {
@@ -31,7 +31,7 @@ public class PidController(ILogger logger)
         var kpPart = Settings.Kp * error;
         var kiPart = Settings.Ki * _integral;
         var kdPart = Settings.Kd * derivative;
-        var output = kpPart + kiPart + kdPart + Settings.Bias;
+        var output = kpPart + kiPart + kdPart;
 
         logger.LogInformation("PID Update for {Name} - Error: {Error}, Output: {Output}, P: {P}, I: {I}, D: {D}, dt: {Dt}",
             Name,
